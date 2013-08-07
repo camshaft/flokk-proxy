@@ -46,9 +46,9 @@ http {
     server {
         listen       <%= ENV["PORT"] %>;
         server_name  _;
+        access_log off;
 
         location <%= ENV["PING_PATH"] %> {
-            access_log off;
             return 200;
         }
 
