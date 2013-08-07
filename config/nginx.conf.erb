@@ -44,6 +44,7 @@ http {
         server_name  _;
 
         location <%= ENV["PING_PATH"] %> {
+            access_log off;
             return 200;
         }
 
