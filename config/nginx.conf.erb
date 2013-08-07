@@ -11,6 +11,7 @@ ENV["UI_BACKEND"] ||= ENV["BACKEND_PREFIX"] + "ui" + ENV["BACKEND_SUFFIX"]
 ENV["API_BACKEND"] ||= ENV["BACKEND_PREFIX"] + "api" + ENV["BACKEND_SUFFIX"]
 ENV["FORCE_HTTPS"] ||= "1"
 ENV["APPS"] ||= ""
+SCHEME = ENV["FORCE_HTTPS"] == "1" ? "https" : "http"
 %>
 
 daemon off;
@@ -66,8 +67,7 @@ http {
             proxy_redirect      off;
             proxy_set_header    Host <%= ENV["UI_BACKEND"] %>;
             proxy_set_header    X-Orig-Host $host;
-            proxy_set_header    X-Orig-Path "";
-            proxy_set_header    X-Orig-Proto $scheme;
+            proxy_set_header    X-Orig-Proto '<%= SCHEME %>';
             proxy_set_header    X-Orig-Port 443;
             proxy_set_header    X-Env 'production';
         }
@@ -79,7 +79,7 @@ http {
             proxy_set_header    Host <%= ENV["API_BACKEND"] %>;
             proxy_set_header    X-Orig-Host $host;
             proxy_set_header    X-Orig-Path '/api';
-            proxy_set_header    X-Orig-Proto $scheme;
+            proxy_set_header    X-Orig-Proto '<%= SCHEME %>';
             proxy_set_header    X-Orig-Port 443;
             proxy_set_header    X-Env 'production';
         }
@@ -101,7 +101,7 @@ http {
             proxy_redirect      off;
             proxy_set_header    Host <%= ENV["BACKEND_PREFIX"] %><%= application %><%= ENV["BACKEND_SUFFIX"] %>;
             proxy_set_header    X-Orig-Host $host;
-            proxy_set_header    X-Orig-Proto $scheme;
+            proxy_set_header    X-Orig-Proto '<%= SCHEME %>';
             proxy_set_header    X-Orig-Port 443;
             proxy_set_header    X-Env 'production';
         }
@@ -114,7 +114,7 @@ http {
             proxy_set_header    Host <%= ENV["API_BACKEND"] %>;
             proxy_set_header    X-Orig-Host $host;
             proxy_set_header    X-Orig-Path '/api';
-            proxy_set_header    X-Orig-Proto $scheme;
+            proxy_set_header    X-Orig-Proto '<%= SCHEME %>';
             proxy_set_header    X-Orig-Port 443;
             proxy_set_header    X-Env 'production';
         }
@@ -135,7 +135,7 @@ http {
             proxy_redirect      off;
             proxy_set_header    Host <%= ENV["BACKEND_PREFIX"] %><%= application %><%= ENV["BACKEND_SUFFIX"] %>;
             proxy_set_header    X-Orig-Host $host;
-            proxy_set_header    X-Orig-Proto $scheme;
+            proxy_set_header    X-Orig-Proto '<%= SCHEME %>';
             proxy_set_header    X-Orig-Port 443;
             proxy_set_header    X-Env $environment;
         }
@@ -148,7 +148,7 @@ http {
             proxy_set_header    Host <%= ENV["API_BACKEND"] %>;
             proxy_set_header    X-Orig-Host $host;
             proxy_set_header    X-Orig-Path '/api';
-            proxy_set_header    X-Orig-Proto $scheme;
+            proxy_set_header    X-Orig-Proto '<%= SCHEME %>';
             proxy_set_header    X-Orig-Port 443;
             proxy_set_header    X-Env $environment;
         }
