@@ -62,7 +62,7 @@ http {
 
     server {
         listen       <%= ENV["PORT"] %>;
-        server_name  <%= ENV["DOMAIN"] %>;
+        server_name  www.<%= ENV["DOMAIN"] %>;
 
         <% if ENV["FORCE_HTTPS"] == "1" %>
         if ($http_x_forwarded_proto != 'https') {
@@ -79,6 +79,7 @@ http {
             proxy_set_header    X-Env 'production';
             proxy_set_header    X-Auth-Host 'auth.<%= ENV["DOMAIN"] %>';
             proxy_set_header    X-API-Host 'api.<%= ENV["DOMAIN"] %>';
+            proxy_set_header    X-UI-Host 'www.<%= ENV["DOMAIN"] %>';
         }
 
         location /api {
@@ -113,6 +114,7 @@ http {
             proxy_set_header    X-Env 'test';
             proxy_set_header    X-Auth-Host 'auth-test.<%= ENV["DOMAIN"] %>';
             proxy_set_header    X-API-Host 'api-test.<%= ENV["DOMAIN"] %>';
+            proxy_set_header    X-UI-Host 'test.<%= ENV["DOMAIN"] %>';
         }
 
         location /api {
@@ -149,6 +151,7 @@ http {
             proxy_set_header    X-Env 'production';
             proxy_set_header    X-Auth-Host 'auth.<%= ENV["DOMAIN"] %>';
             proxy_set_header    X-API-Host 'api.<%= ENV["DOMAIN"] %>';
+            proxy_set_header    X-UI-Host 'www.<%= ENV["DOMAIN"] %>';
         }
 
         <% if application != "api" %>
@@ -185,6 +188,7 @@ http {
             proxy_set_header    X-Env $environment;
             proxy_set_header    X-Auth-Host 'auth-$environment.<%= ENV["DOMAIN"] %>';
             proxy_set_header    X-API-Host 'api-$environment.<%= ENV["DOMAIN"] %>';
+            proxy_set_header    X-UI-Host 'ui-$environment.<%= ENV["DOMAIN"] %>';
         }
 
         <% if application != "api" %>
@@ -224,6 +228,7 @@ http {
             proxy_set_header    X-Env $environment;
             proxy_set_header    X-Auth-Host 'auth-$environment.<%= ENV["DOMAIN"] %>';
             proxy_set_header    X-API-Host 'api-$environment.<%= ENV["DOMAIN"] %>';
+            proxy_set_header    X-UI-Host 'ui-$environment.<%= ENV["DOMAIN"] %>';
         }
 
         <% if application != "api" %>
