@@ -6,10 +6,10 @@ ENV["WORKERS"] ||= "1024"
 ENV["PING_PATH"] ||= "/proxy-ping"
 ENV["DOMAIN"] ||= "theflokk.com"
 ENV["BACKEND_PREFIX"] ||= "flokk-"
-ENV["BACKEND_SUFFIX"] ||= "-prod"
+ENV["BACKEND_BRANCH"] ||= "-prod"
 ENV["BACKEND_HOST"] ||= ".herokuapp.com"
-ENV["UI_BACKEND"] ||= ENV["BACKEND_PREFIX"] + "ui" + ENV["BACKEND_SUFFIX"] + ENV["BACKEND_HOST"]
-ENV["API_BACKEND"] ||= ENV["BACKEND_PREFIX"] + "api" + ENV["BACKEND_SUFFIX"] + ENV["BACKEND_HOST"]
+ENV["UI_BACKEND"] ||= ENV["BACKEND_PREFIX"] + "ui" + ENV["BACKEND_BRANCH"] + ENV["BACKEND_HOST"]
+ENV["API_BACKEND"] ||= ENV["BACKEND_PREFIX"] + "api" + ENV["BACKEND_BRANCH"] + ENV["BACKEND_HOST"]
 ENV["FORCE_HTTPS"] ||= "1"
 ENV["APPS"] ||= ""
 ENV["BLOCK"] ||= ""
@@ -142,9 +142,9 @@ http {
         }
         <% end %>
         location / {
-            proxy_pass          http://<%= ENV["BACKEND_PREFIX"] %><%= application %><%= ENV["BACKEND_SUFFIX"] + ENV["BACKEND_HOST"] %>;
+            proxy_pass          http://<%= ENV["BACKEND_PREFIX"] %><%= application %><%= ENV["BACKEND_BRANCH"] + ENV["BACKEND_HOST"] %>;
             proxy_redirect      off;
-            proxy_set_header    Host <%= ENV["BACKEND_PREFIX"] %><%= application %><%= ENV["BACKEND_SUFFIX"] + ENV["BACKEND_HOST"] %>;
+            proxy_set_header    Host <%= ENV["BACKEND_PREFIX"] %><%= application %><%= ENV["BACKEND_BRANCH"] + ENV["BACKEND_HOST"] %>;
             proxy_set_header    X-Orig-Host $host;
             proxy_set_header    X-Orig-Proto '<%= SCHEME %>';
             proxy_set_header    X-Orig-Port <%= PORT %>;
@@ -179,9 +179,9 @@ http {
         }
         <% end %>
         location / {
-            proxy_pass          'http://<%= ENV["BACKEND_PREFIX"] %><%= application %><%= ENV["BACKEND_SUFFIX"] + ENV["BACKEND_HOST"] %>';
+            proxy_pass          'http://<%= ENV["BACKEND_PREFIX"] %><%= application %><%= ENV["BACKEND_BRANCH"] + ENV["BACKEND_HOST"] %>';
             proxy_redirect      off;
-            proxy_set_header    Host <%= ENV["BACKEND_PREFIX"] %><%= application %><%= ENV["BACKEND_SUFFIX"] + ENV["BACKEND_HOST"] %>;
+            proxy_set_header    Host <%= ENV["BACKEND_PREFIX"] %><%= application %><%= ENV["BACKEND_BRANCH"] + ENV["BACKEND_HOST"] %>;
             proxy_set_header    X-Orig-Host $host;
             proxy_set_header    X-Orig-Proto '<%= SCHEME %>';
             proxy_set_header    X-Orig-Port <%= PORT %>;
