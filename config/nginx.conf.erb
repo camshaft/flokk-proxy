@@ -6,9 +6,10 @@ ENV["WORKERS"] ||= "1024"
 ENV["PING_PATH"] ||= "/proxy-ping"
 ENV["DOMAIN"] ||= "theflokk.com"
 ENV["BACKEND_PREFIX"] ||= "flokk-"
-ENV["BACKEND_SUFFIX"] ||= "-prod.herokuapp.com"
-ENV["UI_BACKEND"] ||= ENV["BACKEND_PREFIX"] + "ui" + ENV["BACKEND_SUFFIX"]
-ENV["API_BACKEND"] ||= ENV["BACKEND_PREFIX"] + "api" + ENV["BACKEND_SUFFIX"]
+ENV["BACKEND_SUFFIX"] ||= "-prod"
+ENV["BACKEND_HOST"] ||= ".herokuapp.com"
+ENV["UI_BACKEND"] ||= ENV["BACKEND_PREFIX"] + "ui" + ENV["BACKEND_SUFFIX"] + ENV["BACKEND_HOST"]
+ENV["API_BACKEND"] ||= ENV["BACKEND_PREFIX"] + "api" + ENV["BACKEND_SUFFIX"] + ENV["BACKEND_HOST"]
 ENV["FORCE_HTTPS"] ||= "1"
 ENV["APPS"] ||= ""
 SCHEME = ENV["FORCE_HTTPS"] == "1" ? "https" : "http"
@@ -97,9 +98,9 @@ http {
         }
         <% end %>
         location / {
-            proxy_pass          http://<%= ENV["BACKEND_PREFIX"] %><%= application %><%= ENV["BACKEND_SUFFIX"] %>;
+            proxy_pass          http://<%= ENV["BACKEND_PREFIX"] %><%= application %><%= ENV["BACKEND_SUFFIX"] + ENV["BACKEND_HOST"] %>;
             proxy_redirect      off;
-            proxy_set_header    Host <%= ENV["BACKEND_PREFIX"] %><%= application %><%= ENV["BACKEND_SUFFIX"] %>;
+            proxy_set_header    Host <%= ENV["BACKEND_PREFIX"] %><%= application %><%= ENV["BACKEND_SUFFIX"] + ENV["BACKEND_HOST"] %>;
             proxy_set_header    X-Orig-Host $host;
             proxy_set_header    X-Orig-Proto '<%= SCHEME %>';
             proxy_set_header    X-Orig-Port 443;
@@ -131,9 +132,46 @@ http {
         }
         <% end %>
         location / {
-            proxy_pass          'http://<%= ENV["BACKEND_PREFIX"] %><%= application %><%= ENV["BACKEND_SUFFIX"] %>';
+            proxy_pass          'http://<%= ENV["BACKEND_PREFIX"] %><%= application %><%= ENV["BACKEND_SUFFIX"] + ENV["BACKEND_HOST"] %>';
             proxy_redirect      off;
-            proxy_set_header    Host <%= ENV["BACKEND_PREFIX"] %><%= application %><%= ENV["BACKEND_SUFFIX"] %>;
+            proxy_set_header    Host <%= ENV["BACKEND_PREFIX"] %><%= application %><%= ENV["BACKEND_SUFFIX"] + ENV["BACKEND_HOST"] %>;
+            proxy_set_header    X-Orig-Host $host;
+            proxy_set_header    X-Orig-Proto '<%= SCHEME %>';
+            proxy_set_header    X-Orig-Port 443;
+            proxy_set_header    X-Env $environment;
+        }
+
+        <% if application != "api" %>
+        location /api {
+            rewrite /api/?(.*) /$1 break;
+            proxy_pass          http://<%= ENV["API_BACKEND"] %>;
+            proxy_redirect      off;
+            proxy_set_header    Host <%= ENV["API_BACKEND"] %>;
+            proxy_set_header    X-Orig-Host $host;
+            proxy_set_header    X-Orig-Path '/api';
+            proxy_set_header    X-Orig-Proto '<%= SCHEME %>';
+            proxy_set_header    X-Orig-Port 443;
+            proxy_set_header    X-Env $environment;
+        }
+        <% end %>
+    }
+
+    server {
+        listen       <%= ENV["PORT"] %>;
+        server_name  ~^<%= application %>-(?<environment>\w+)-(?<branch>[\w-]+)\.<%= ENV["DOMAIN"].gsub(/\./, "\\.") %>$;
+
+        # We have to use a resolver here because we have `$branch` in the proxy_pass
+        resolver 8.8.8.8;
+
+        <% if ENV["FORCE_HTTPS"] == "1" %>
+        if ($http_x_forwarded_proto != 'https') {
+            return 301 https://$server_name$request_uri;
+        }
+        <% end %>
+        location / {
+            proxy_pass          'http://<%= ENV["BACKEND_PREFIX"] %><%= application %>-$branch<%= ENV["BACKEND_HOST"] %>';
+            proxy_redirect      off;
+            proxy_set_header    Host <%= ENV["BACKEND_PREFIX"] %><%= application %>-$branch<%= ENV["BACKEND_HOST"] %>;
             proxy_set_header    X-Orig-Host $host;
             proxy_set_header    X-Orig-Proto '<%= SCHEME %>';
             proxy_set_header    X-Orig-Port 443;
