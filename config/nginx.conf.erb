@@ -77,9 +77,9 @@ http {
             proxy_set_header    X-Orig-Proto '<%= SCHEME %>';
             proxy_set_header    X-Orig-Port <%= PORT %>;
             proxy_set_header    X-Env 'production';
-            proxy_set_header    X-Auth-Host 'auth.<%= ENV["DOMAIN"] %>';
-            proxy_set_header    X-API-Host 'api.<%= ENV["DOMAIN"] %>';
-            proxy_set_header    X-UI-Host 'www.<%= ENV["DOMAIN"] %>';
+            proxy_set_header    X-Auth-URL 'https://auth.<%= ENV["DOMAIN"] %>';
+            proxy_set_header    X-API-URL 'https://api.<%= ENV["DOMAIN"] %>';
+            proxy_set_header    X-UI-URL 'https://www.<%= ENV["DOMAIN"] %>';
         }
 
         location /api {
@@ -112,9 +112,9 @@ http {
             proxy_set_header    X-Orig-Proto '<%= SCHEME %>';
             proxy_set_header    X-Orig-Port <%= PORT %>;
             proxy_set_header    X-Env 'test';
-            proxy_set_header    X-Auth-Host 'auth-test.<%= ENV["DOMAIN"] %>';
-            proxy_set_header    X-API-Host 'api-test.<%= ENV["DOMAIN"] %>';
-            proxy_set_header    X-UI-Host 'test.<%= ENV["DOMAIN"] %>';
+            proxy_set_header    X-Auth-URL 'https://auth-test.<%= ENV["DOMAIN"] %>';
+            proxy_set_header    X-API-URL 'https://api-test.<%= ENV["DOMAIN"] %>';
+            proxy_set_header    X-UI-URL 'https://test.<%= ENV["DOMAIN"] %>';
         }
 
         location /api {
@@ -149,9 +149,9 @@ http {
             proxy_set_header    X-Orig-Proto '<%= SCHEME %>';
             proxy_set_header    X-Orig-Port <%= PORT %>;
             proxy_set_header    X-Env 'production';
-            proxy_set_header    X-Auth-Host 'auth.<%= ENV["DOMAIN"] %>';
-            proxy_set_header    X-API-Host 'api.<%= ENV["DOMAIN"] %>';
-            proxy_set_header    X-UI-Host 'www.<%= ENV["DOMAIN"] %>';
+            proxy_set_header    X-Auth-URL 'https://auth.<%= ENV["DOMAIN"] %>';
+            proxy_set_header    X-API-URL 'https://api.<%= ENV["DOMAIN"] %>';
+            proxy_set_header    X-UI-URL 'https://www.<%= ENV["DOMAIN"] %>';
         }
 
         <% if application != "api" %>
@@ -186,9 +186,9 @@ http {
             proxy_set_header    X-Orig-Proto '<%= SCHEME %>';
             proxy_set_header    X-Orig-Port <%= PORT %>;
             proxy_set_header    X-Env $environment;
-            proxy_set_header    X-Auth-Host 'auth-$environment.<%= ENV["DOMAIN"] %>';
-            proxy_set_header    X-API-Host 'api-$environment.<%= ENV["DOMAIN"] %>';
-            proxy_set_header    X-UI-Host 'ui-$environment.<%= ENV["DOMAIN"] %>';
+            proxy_set_header    X-Auth-URL 'https://auth-$environment.<%= ENV["DOMAIN"] %>';
+            proxy_set_header    X-API-URL 'https://api-$environment.<%= ENV["DOMAIN"] %>';
+            proxy_set_header    X-UI-URL 'https://ui-$environment.<%= ENV["DOMAIN"] %>';
         }
 
         <% if application != "api" %>
@@ -226,9 +226,9 @@ http {
             proxy_set_header    X-Orig-Proto '<%= SCHEME %>';
             proxy_set_header    X-Orig-Port <%= PORT %>;
             proxy_set_header    X-Env $environment;
-            proxy_set_header    X-Auth-Host 'auth-$environment.<%= ENV["DOMAIN"] %>';
-            proxy_set_header    X-API-Host 'api-$environment.<%= ENV["DOMAIN"] %>';
-            proxy_set_header    X-UI-Host 'ui-$environment.<%= ENV["DOMAIN"] %>';
+            proxy_set_header    X-Auth-URL 'https://auth-$environment.<%= ENV["DOMAIN"] %>';
+            proxy_set_header    X-API-URL 'https://api-$environment.<%= ENV["DOMAIN"] %>';
+            proxy_set_header    X-UI-URL 'https://ui-$environment.<%= ENV["DOMAIN"] %>';
         }
 
         <% if application != "api" %>
