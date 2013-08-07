@@ -12,6 +12,7 @@ ENV["UI_BACKEND"] ||= ENV["BACKEND_PREFIX"] + "ui" + ENV["BACKEND_SUFFIX"] + ENV
 ENV["API_BACKEND"] ||= ENV["BACKEND_PREFIX"] + "api" + ENV["BACKEND_SUFFIX"] + ENV["BACKEND_HOST"]
 ENV["FORCE_HTTPS"] ||= "1"
 ENV["APPS"] ||= ""
+ENV["BLOCK"] ||= ""
 SCHEME = ENV["FORCE_HTTPS"] == "1" ? "https" : "http"
 %>
 
@@ -35,8 +36,11 @@ http {
     access_log logs/nginx/access.log access;
     error_log logs/nginx/error.log;
 
-    #Must read the body in 5 seconds.
+    # Must read the body in 5 seconds.
     client_body_timeout 5;
+
+    # Turn off the version number
+    server_tokens off;
 
     # Listen for ping events to tell that we're up
     server {
