@@ -123,7 +123,7 @@ http {
 
     server {
         listen       <%= ENV["PORT"] %>;
-        server_name  ~^(?<environment>\w+)\.<%= application %>\.<%= ENV["DOMAIN"].gsub(/\./, "\\.") %>$;
+        server_name  ~^<%= application %>-(?<environment>\w+)\.<%= ENV["DOMAIN"].gsub(/\./, "\\.") %>$;
 
         <% if ENV["FORCE_HTTPS"] == "1" %>
         if ($http_x_forwarded_proto != 'https') {
