@@ -150,6 +150,8 @@ http {
     <% ENV["APPS"].split(",").each do |application| %>
     # <%= application %> routes
 
+    <% # We don't want it to conflict if it's the same as the ui domain %>
+    <% if application + "." != ENV["SITE_DOMAIN"] %>
     server {
         listen       <%= ENV["PORT"] %>;
         server_name  <%= application %>.<%= ENV["DOMAIN"] %>;
@@ -187,6 +189,7 @@ http {
         }
         <% end %>
     }
+    <% end %>
 
     server {
         listen       <%= ENV["PORT"] %>;
