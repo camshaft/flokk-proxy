@@ -5,6 +5,7 @@ ENV["POLL"] ||= "epoll"
 ENV["WORKERS"] ||= "1024"
 ENV["PING_PATH"] ||= "/proxy-ping"
 ENV["DOMAIN"] ||= "theflokk.com"
+ENV["SITE_DOMAIN"] ||= "www."
 ENV["BACKEND_PREFIX"] ||= "flokk-"
 ENV["BACKEND_BRANCH"] ||= "-prod"
 ENV["BACKEND_HOST"] ||= ".herokuapp.com"
@@ -77,7 +78,7 @@ http {
 
     server {
         listen       <%= ENV["PORT"] %>;
-        server_name  www.<%= ENV["DOMAIN"] %>;
+        server_name  <%= ENV["SITE_DOMAIN"] + ENV["DOMAIN"] %>;
 
         <% if FORCE_HTTPS %>
         if ($http_x_forwarded_proto != 'https') {
@@ -95,7 +96,7 @@ http {
             proxy_set_header    X-Env 'production';
             proxy_set_header    X-Auth-URL 'https://auth.<%= ENV["DOMAIN"] %>';
             proxy_set_header    X-API-URL 'https://api.<%= ENV["DOMAIN"] %>';
-            proxy_set_header    X-UI-URL 'https://www.<%= ENV["DOMAIN"] %>';
+            proxy_set_header    X-UI-URL 'https://<%= ENV["SITE_DOMAIN"] + ENV["DOMAIN"] %>';
         }
 
         location /api {
@@ -147,7 +148,7 @@ http {
         }
     }
     <% ENV["APPS"].split(",").each do |application| %>
-    # <%= application %> environment
+    # <%= application %> routes
 
     server {
         listen       <%= ENV["PORT"] %>;
@@ -169,7 +170,7 @@ http {
             proxy_set_header    X-Env 'production';
             proxy_set_header    X-Auth-URL 'https://auth.<%= ENV["DOMAIN"] %>';
             proxy_set_header    X-API-URL 'https://api.<%= ENV["DOMAIN"] %>';
-            proxy_set_header    X-UI-URL 'https://www.<%= ENV["DOMAIN"] %>';
+            proxy_set_header    X-UI-URL 'https://<%= ENV["SITE_DOMAIN"] + ENV["DOMAIN"] %>';
         }
 
         <% if application != "api" %>
